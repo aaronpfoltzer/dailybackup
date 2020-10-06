@@ -3,7 +3,7 @@ BACKUP_PATH="/media/Passport"
 BACKUP_LOG_FOLDER="backuplog"
 BACKUP_LOG_PATH="$BACKUP_PATH/$BACKUP_LOG_FOLDER"
 
-MAX_LOGS=7
+MAX_LOGS=14
 MAX_DAILY_BACKUPS=14
 
 [ ! -d "$BACKUP_LOG_PATH" ] && mkdir $BACKUP_LOG_PATH
@@ -22,6 +22,8 @@ done
 
 overmaxlogs=$((MAX_LOGS+1));
 [ -f "$BACKUP_LOG_PATH/backup.$overmaxlogs.log" ] && rm $BACKUP_LOG_PATH/backup.$overmaxlogs.log
+
+touch $thislog
 
 i=$((MAX_DAILY_BACKUPS));
 while (( $i >= 0 ))
