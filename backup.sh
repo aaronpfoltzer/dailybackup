@@ -3,7 +3,7 @@ BACKUP_PATH="/media/Passport"
 BACKUP_LOG_FOLDER="backuplog"
 BACKUP_LOG_PATH="$BACKUP_PATH/$BACKUP_LOG_FOLDER"
 
-MAX_LOGS=14
+MAX_LOGS=7
 MAX_DAILY_BACKUPS=14
 
 [ ! -d "$BACKUP_LOG_PATH" ] && mkdir $BACKUP_LOG_PATH
@@ -31,6 +31,11 @@ do
 	((i--))
 done
 
+overmaxdaily=$((MAX_DAILY_BACKUPS+1));
+
+[ -d "$BACKUP_PATH/daily.$overmaxdaily" ] && rm -rf $BACKUP_PATH/daily.$overmaxdaily 
+
+[ -d "$BACKUP_PATH/daily.1" ] && cp -al $BACKUP_PATH/daily.1 $BACKUP_PATH/daily.0
 
 [ ! -d "$BACKUP_PATH/daily.0" ] && mkdir $BACKUP_PATH/daily.0
 
@@ -38,7 +43,7 @@ done
 echo "Beginning backup at $(date)" >> $thislog
 echo "Creating backup $BACKUP_PATH/daily.0" >> $thislog
 
-nohup rsync -aunAXv --delete --exclude-from='./exclude.txt' --exclude '$BACKUP_LOG_PATH/*' --exclude '$BACKUP_PATH/*' / $BACKUP_PATH/daily.0 >> $thislog &
+nohup rsync -auAXv --delete --exclude-from='./exclude.txt' --exclude '$BACKUP_LOG_PATH/*' --exclude '$BACKUP_PATH/*' / $BACKUP_PATH/daily.0 >> $thislog &
 
 echo "Finished backup at $(date)" >> $thislog
 
